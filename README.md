@@ -4,6 +4,8 @@ FGE is a really simple functional-oriented pseudo game engine which acts like a 
 
 Its objective is to bring functional programming into the world of game development.
 
+A complete API documentation is available [here](https://samidalil.github.io/fge/).
+
 # Overview
 
 FGE provides basic game engine components and tools to update state without mutating it.
@@ -107,7 +109,7 @@ while (!state.won) {
 
 ## Description
 
-A routine is a possibly async function taking the current game state and the current runner clock as parameters and computes a new state, it should return a new reference if the state has been modified.
+A routine is a pure async-able function taking the current game state and a runner's clock as parameters and computes a new state, it should return a new reference if the state has been modified.
 
 For example :
 
@@ -147,7 +149,7 @@ As you can see, we define a routine updating the y component of the player posit
 
 ## Patch routines
 
-Currently, you have to construct the new state by yourself. However, this could be simplified by using the ```update``` helper wrapper and a patch routine :
+In the previous example, we constructed the new state ourselves. However, this could be simplified by using the ```update``` helper wrapper and a patch routine :
 
 ```typescript
 ...

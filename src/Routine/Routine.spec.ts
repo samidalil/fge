@@ -50,8 +50,9 @@ test('Patch routine returns a new state when used with different values', async 
   };
   const updatedState = await routine(state, createClock());
 
-  t.assert(
-    state !== updatedState,
+  t.not(
+    state,
+    updatedState,
     'Patch routine returns same reference even with different values'
   );
   t.notDeepEqual(state, updatedState);

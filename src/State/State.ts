@@ -8,20 +8,42 @@ import type { AnyState, NestedPartial } from '../types';
  *
  * @category State
  */
-export const patch = <S extends AnyState>(
+export function patch<S extends AnyState>(
   state: S,
   modifications: NestedPartial<S>
-): S =>
-  Object.entries(modifications).reduce((state, [key, value]) => {
+): S;
+export function patch<S extends readonly unknown[], R extends S>(
+  state: S,
+  modifications: R
+): R;
+export function patch(
+  state: AnyState | readonly unknown[],
+  modifications: AnyState | readonly unknown[]
+): AnyState | readonly unknown[] {
+  if (Array.isArray(state) && Array.isArray(modifications)) {
+    const array = modifications.map((currentValue, index) =>
+      patch(state[index], currentValue)
+    );
+
+    return array.length !== state.length ||
+      array.some((value, index) => value !== state[index])
+      ? array
+      : state;
+  }
+
+  return Object.entries(modifications).reduce((state, [key, value]) => {
+    const oldValue = state[key];
+
     const newValue =
-      typeof value === 'object'
-        ? patch(state[key] as Record<string, unknown>, value)
+      typeof value === 'object' && value !== null
+        ? patch(oldValue as Record<string, unknown>, value)
         : value;
 
-    return state[key] === newValue
+    return oldValue === newValue
       ? state
       : {
           ...state,
           [key]: newValue,
         };
-  }, state);
+  }, state as AnyState);
+}
