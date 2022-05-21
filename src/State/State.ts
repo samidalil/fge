@@ -21,9 +21,16 @@ export function patch(
   modifications: AnyState | readonly unknown[]
 ): AnyState | readonly unknown[] {
   if (Array.isArray(state) && Array.isArray(modifications)) {
-    const array = modifications.map((currentValue, index) =>
-      patch(state[index], currentValue)
-    );
+    const array = modifications.map((value, index) => {
+      const oldValue = state[index];
+
+      if (oldValue === undefined)
+        return value;
+
+      return typeof value === 'object' && value !== null
+        ? patch(oldValue, value)
+        : value
+    });
 
     return array.length !== state.length ||
       array.some((value, index) => value !== state[index])
@@ -34,6 +41,13 @@ export function patch(
   return Object.entries(modifications).reduce((state, [key, value]) => {
     const oldValue = state[key];
 
+    if (oldValue === undefined) {
+      return {
+        ...state,
+        [key]: value,
+      };
+    }
+
     const newValue =
       typeof value === 'object' && value !== null
         ? patch(oldValue as Record<string, unknown>, value)
@@ -42,8 +56,8 @@ export function patch(
     return oldValue === newValue
       ? state
       : {
-          ...state,
-          [key]: newValue,
-        };
+        ...state,
+        [key]: newValue,
+      };
   }, state as AnyState);
 }

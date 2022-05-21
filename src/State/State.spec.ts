@@ -175,3 +175,60 @@ test('Patch does not update array with same values', (t) => {
   );
   t.deepEqual(state, updatedState);
 });
+
+type TestObjectArrayState = {
+  readonly angle: number;
+  readonly positions: readonly {
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+  }[];
+};
+
+test('Patch works with object arrays', (t) => {
+  const state: TestObjectArrayState = {
+    angle: 0,
+    positions: [{
+      x: 0,
+      y: 1,
+      z: 2,
+    }],
+  };
+  const updatedState = patch(state, { positions: [state.positions[0], state.positions[0]] });
+
+  t.not(
+    state,
+    updatedState,
+    'State has a different reference even with same nested values'
+  );
+  t.not(
+    state.positions,
+    updatedState.positions,
+    'State field has a different reference even with same nested values'
+  );
+  t.notDeepEqual(state, updatedState);
+});
+
+test('Patch does not update object arrays with same values', (t) => {
+  const state: TestObjectArrayState = {
+    angle: 0,
+    positions: [{
+      x: 0,
+      y: 1,
+      z: 2,
+    }],
+  };
+  const updatedState = patch(state, { positions: [state.positions[0]] });
+
+  t.is(
+    state,
+    updatedState,
+    'State has a different reference even with same nested values'
+  );
+  t.is(
+    state.positions,
+    updatedState.positions,
+    'State field has a different reference even with same nested values'
+  );
+  t.deepEqual(state, updatedState);
+});
