@@ -238,3 +238,20 @@ test('Patch does not update object arrays with same values', (t) => {
   );
   t.deepEqual(state, updatedState);
 });
+
+type TestOptionalState = {
+  readonly enemyName?: string;
+};
+
+test('Patch adds field when undefined in original state', (t) => {
+  const state: TestOptionalState = {};
+  const updatedState = patch(state, { enemyName: 'Enemy' });
+
+  t.not(
+    state,
+    updatedState,
+    'State has the same reference even with different values'
+  );
+  t.not(state.enemyName, updatedState.enemyName, 'State field has same value');
+  t.notDeepEqual(state, updatedState);
+});
