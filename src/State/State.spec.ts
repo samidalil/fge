@@ -188,13 +188,17 @@ type TestObjectArrayState = {
 test('Patch works with object arrays', (t) => {
   const state: TestObjectArrayState = {
     angle: 0,
-    positions: [{
-      x: 0,
-      y: 1,
-      z: 2,
-    }],
+    positions: [
+      {
+        x: 0,
+        y: 1,
+        z: 2,
+      },
+    ],
   };
-  const updatedState = patch(state, { positions: [state.positions[0], state.positions[0]] });
+  const updatedState = patch(state, {
+    positions: [state.positions[0], state.positions[0]],
+  });
 
   t.not(
     state,
@@ -212,11 +216,13 @@ test('Patch works with object arrays', (t) => {
 test('Patch does not update object arrays with same values', (t) => {
   const state: TestObjectArrayState = {
     angle: 0,
-    positions: [{
-      x: 0,
-      y: 1,
-      z: 2,
-    }],
+    positions: [
+      {
+        x: 0,
+        y: 1,
+        z: 2,
+      },
+    ],
   };
   const updatedState = patch(state, { positions: [state.positions[0]] });
 

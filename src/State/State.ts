@@ -24,12 +24,11 @@ export function patch(
     const array = modifications.map((value, index) => {
       const oldValue = state[index];
 
-      if (oldValue === undefined)
-        return value;
+      if (oldValue === undefined) return value;
 
       return typeof value === 'object' && value !== null
         ? patch(oldValue, value)
-        : value
+        : value;
     });
 
     return array.length !== state.length ||
@@ -56,8 +55,8 @@ export function patch(
     return oldValue === newValue
       ? state
       : {
-        ...state,
-        [key]: newValue,
-      };
+          ...state,
+          [key]: newValue,
+        };
   }, state as AnyState);
 }
