@@ -21,8 +21,10 @@ export function patch(
   modifications: AnyState | readonly unknown[]
 ): AnyState | readonly unknown[] {
   if (Array.isArray(state) && Array.isArray(modifications)) {
-    const array = modifications.map((currentValue, index) =>
-      patch(state[index], currentValue)
+    const array = modifications.map((value, index) =>
+      typeof value === 'object' && value !== null
+        ? patch(state[index], value)
+        : value
     );
 
     return array.length !== state.length ||
