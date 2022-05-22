@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.4](https://github.com/samidalil/fge/compare/v1.0.3...v1.0.4) (2022-05-22)
+
+
+### Bug Fixes
+
+* Patch can now be used on primitive types and uses Object.is for comparison ([a9d5d5e](https://github.com/samidalil/fge/commit/a9d5d5e2d7eff8d1e43b94e9ed60bf09761f793e))
+
 ### [1.0.3](https://github.com/samidalil/fge/compare/v1.0.2...v1.0.3) (2022-05-21)
 
 
