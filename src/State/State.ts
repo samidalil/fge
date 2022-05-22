@@ -16,19 +16,22 @@ export function patch<S extends readonly unknown[], R extends S>(
   state: S,
   modifications: R
 ): R;
-export function patch(
-  state: AnyState | readonly unknown[],
-  modifications: AnyState | readonly unknown[]
-): AnyState | readonly unknown[] {
+export function patch<S>(state: S, modifications: S): S;
+export function patch(state: unknown, modifications: unknown): unknown {
+  if (
+    state === undefined ||
+    state === null ||
+    modifications === undefined ||
+    modifications === null
+  )
+    return modifications;
+
   if (Array.isArray(state) && Array.isArray(modifications)) {
     const array = modifications.map((value, index) => {
       const oldValue = state[index];
 
       if (oldValue === undefined) return value;
-
-      return typeof value === 'object' && value !== null
-        ? patch(oldValue, value)
-        : value;
+      return patch(oldValue, value);
     });
 
     return array.length !== state.length ||
@@ -37,26 +40,19 @@ export function patch(
       : state;
   }
 
-  return Object.entries(modifications).reduce((state, [key, value]) => {
-    const oldValue = state[key];
+  if (typeof state === 'object' && typeof modifications === 'object') {
+    return Object.entries(modifications).reduce((state, [key, value]) => {
+      const oldValue = state[key];
+      const newValue = patch(oldValue, value);
 
-    if (oldValue === undefined) {
-      return {
-        ...state,
-        [key]: value,
-      };
-    }
+      return Object.is(oldValue, newValue)
+        ? state
+        : {
+            ...state,
+            [key]: newValue,
+          };
+    }, state as AnyState);
+  }
 
-    const newValue =
-      typeof value === 'object' && value !== null
-        ? patch(oldValue as Record<string, unknown>, value)
-        : value;
-
-    return oldValue === newValue
-      ? state
-      : {
-          ...state,
-          [key]: newValue,
-        };
-  }, state as AnyState);
+  return modifications;
 }
